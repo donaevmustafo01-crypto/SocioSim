@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SocioSim — Симулятори Муошират</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #090910;
+  --surface: #10101a;
+  --card: #13131f;
+  --border: #1e1e30;
+  --accent: #6c63ff;
+  --accent2: #a89dff;
+  --green: #4dffb4;
+  --orange: #ff9b4d;
+  --red: #ff4d6d;
+  --text: #f0eeff;
+  --muted: #5a5a7a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  padding-bottom: 40px;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  top: -200px; left: 50%;
+  transform: translateX(-50%);
+  width: 700px; height: 500px;
+  background: radial-gradient(ellipse, rgba(108,99,255,0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* HEADER */
+.header {
+  background: rgba(16,16,26,0.95);
+  border-bottom: 1px solid var(--border);
+  padding: 18px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+.header-inner { max-width: 600px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-icon { font-size: 24px; }
+.logo h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #6c63ff, #a89dff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.lang-toggle {
+  display: flex;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px;
+  gap: 2px;
+}
+.lang-opt {
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.2s;
+  border: none;
+  background: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.lang-opt.active { background: var(--accent); color: #fff; }
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 40px 20px 32px;
+  position: relative;
+  z-index: 1;
+}
+.hero-badge {
+  display: inline-block;
+  background: rgba(108,99,255,0.15);
+  border: 1px solid rgba(108,99,255,0.3);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: var(--accent2);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.hero h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.hero h2 span {
+  background: linear-gradient(135deg, #6c63ff, #a89dff, #4dffb4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+/* SEARCH */
+.search-wrap {
+  padding: 0 16px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.search-input {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 13px 16px 13px 44px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-icon {
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  pointer-events: none;
+}
+
+/* CATEGORIES */
+.cats-wrap {
+  padding: 0 16px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: relative;
+  z-index: 1;
+}
+.cats-wrap::-webkit-scrollbar { display: none; }
+.cat-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.cat-btn.active {
+  background: rgba(108,99,255,0.15);
+  border-color: rgba(108,99,255,0.4);
+  color: var(--accent2);
+}
+
+/* GRID */
+.grid {
+  padding: 0 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.scenario-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+.scenario-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(108,99,255,0.05), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.scenario-card:active::before { opacity: 1; }
+.scenario-card:active { transform: scale(0.97); }
+
+.card-emoji { font-size: 28px; margin-bottom: 10px; display: block; }
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.card-desc {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.card-footer { display: flex; align-items: center; justify-content: space-between; }
+.card-cat {
+  font-size: 10px;
+  color: var(--accent2);
+  font-weight: 600;
+  background: rgba(108,99,255,0.1);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.difficulty {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.diff-easy { background: rgba(77,255,180,0.1); color: var(--green); }
+.diff-mid { background: rgba(255,155,77,0.1); color: var(--orange); }
+.diff-hard { background: rgba(255,77,109,0.1); color: var(--red); }
+.diff-vhard { background: rgba(255,77,109,0.15); color: var(--red); border: 1px solid rgba(255,77,109,0.3); }
+
+/* STATS BAR */
+.stats-bar {
+  max-width: 600px;
+  margin: 0 auto 24px;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+.stat-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+}
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #6c63ff, #a89dff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+}
+.stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--muted);
+  font-size: 14px;
+  grid-column: 1/-1;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">🧠</span>
+      <h1>SocioSim</h1>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-opt active" onclick="setLang('tj', this)">ТҶ</button>
+      <button class="lang-opt" onclick="setLang('ru', this)">РУ</button>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">🎭 52 сценарий</div>
+  <h2>Муошират<br><span>машқ кун</span></h2>
+  <p id="heroDesc">AI бо ту гап мезанад — ту малакаи гуфтугӯро меомӯзӣ</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-num">52</span>
+    <div class="stat-label" id="statLabel1">Утоқ</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">7</span>
+    <div class="stat-label" id="statLabel2">Мавзӯъ</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">AI</span>
+    <div class="stat-label" id="statLabel3">Баҳодиҳӣ</div>
+  </div>
+</div>
+
+<div class="search-wrap">
+  <span class="search-icon">🔍</span>
+  <input class="search-input" id="searchInput" placeholder="Ҷустуҷӯ..." oninput="filterCards()">
+</div>
+
+<div class="cats-wrap" id="catsWrap">
+  <button class="cat-btn active" onclick="filterCat('all', this)" id="catAll">Ҳама</button>
+</div>
+
+<div class="grid" id="scenarioGrid"></div>
+
+<script>
+let currentLang = 'tj';
+let currentCat = 'all';
+
+const scenarios = {{ scenarios | tojson }};
+
+const diffMap = {
+  'tj': { 'Осон': 'diff-easy', 'Миёна': 'diff-mid', 'Душвор': 'diff-hard', 'Хеле душвор': 'diff-vhard' },
+  'ru': { 'Осон': 'diff-easy', 'Миёна': 'diff-mid', 'Душвор': 'diff-hard', 'Хеле душвор': 'diff-vhard' }
+};
+
+const diffLabel = {
+  'tj': { 'Осон': 'Осон', 'Миёна': 'Миёна', 'Душвор': 'Душвор', 'Хеле душвор': '🔥 Зур' },
+  'ru': { 'Осон': 'Легко', 'Миёна': 'Средне', 'Душвор': 'Сложно', 'Хеле душвор': '🔥 Хардкор' }
+};
+
+const uiText = {
+  tj: {
+    search: 'Ҷустуҷӯ...',
+    hero: 'AI бо ту гап мезанад — ту малакаи гуфтугӯро меомӯзӣ',
+    all: 'Ҳама',
+    rooms: 'Утоқ',
+    topics: 'Мавзӯъ',
+    rating: 'Баҳодиҳӣ',
+    empty: 'Ёфт нашуд 😔'
+  },
+  ru: {
+    search: 'Поиск...',
+    hero: 'AI разговаривает с тобой — ты учишься общаться',
+    all: 'Все',
+    rooms: 'Сцен.',
+    topics: 'Тема',
+    rating: 'Оценка',
+    empty: 'Не найдено 😔'
+  }
+};
+
+// Build category buttons
+const cats = ['all', ...new Set(scenarios.map(s => s.category))];
+const catsWrap = document.getElementById('catsWrap');
+catsWrap.innerHTML = '';
+cats.forEach(cat => {
+  const btn = document.createElement('button');
+  btn.className = 'cat-btn' + (cat === 'all' ? ' active' : '');
+  btn.textContent = cat === 'all' ? uiText[currentLang].all : cat;
+  btn.dataset.cat = cat;
+  btn.onclick = () => filterCat(cat, btn);
+  catsWrap.appendChild(btn);
+});
+
+function setLang(lang, btn) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-opt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('searchInput').placeholder = uiText[lang].search;
+  document.getElementById('heroDesc').textContent = uiText[lang].hero;
+  document.getElementById('statLabel1').textContent = uiText[lang].rooms;
+  document.getElementById('statLabel2').textContent = uiText[lang].topics;
+  document.getElementById('statLabel3').textContent = uiText[lang].rating;
+  // Update cat buttons
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    if (btn.dataset.cat === 'all') btn.textContent = uiText[lang].all;
+  });
+  renderCards();
+}
+
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards();
+}
+
+function filterCards() { renderCards(); }
+
+function renderCards() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const grid = document.getElementById('scenarioGrid');
+  const filtered = scenarios.filter(s => {
+    const title = currentLang === 'tj' ? s.title : s.title_ru;
+    const desc = currentLang === 'tj' ? s.desc : s.desc_ru;
+    const matchCat = currentCat === 'all' || s.category === currentCat;
+    const matchQ = !q || title.toLowerCase().includes(q) || desc.toLowerCase().includes(q) || s.category.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty-state">${uiText[currentLang].empty}</div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(s => {
+    const title = currentLang === 'tj' ? s.title : s.title_ru;
+    const desc = currentLang === 'tj' ? s.desc : s.desc_ru;
+    const dClass = diffMap[currentLang][s.difficulty] || 'diff-mid';
+    const dLabel = diffLabel[currentLang][s.difficulty] || s.difficulty;
+    return `
+      <a class="scenario-card" href="/sim/${s.id}?lang=${currentLang}">
+        <span class="card-emoji">${s.emoji}</span>
+        <div class="card-title">${title}</div>
+        <div class="card-desc">${desc}</div>
+        <div class="card-footer">
+          <span class="card-cat">${s.category}</span>
+          <span class="difficulty ${dClass}">${dLabel}</span>
+        </div>
+      </a>`;
+  }).join('');
+}
+
+renderCards();
+</script>
+</body>
+</html>
