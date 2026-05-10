@@ -125,7 +125,7 @@ def chat():
 
     try:
         completion = groq_client.chat.completions.create(
-            model="llama3-8b-8192",
+            model="llama-3.1-8b-instant",
             messages=groq_messages,
             max_tokens=300,
             temperature=0.85
@@ -206,7 +206,7 @@ def evaluate():
 
     try:
         completion = groq_client.chat.completions.create(
-            model="llama3-70b-8192",
+            model="llama-3.3-70b-versatile",
             messages=[{"role": "user", "content": eval_prompt}],
             max_tokens=600,
             temperature=0.7
@@ -218,3 +218,4 @@ def evaluate():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
